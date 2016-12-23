@@ -12,6 +12,7 @@ import scalatags.JsDom.all._
 import org.scalajs.dom.raw._
 
 import org.lorenzhawkes.sdungeon.shared.DisplayMsgs._
+import org.lorenzhawkes.sdungeon.shared.DisplayMsgs.DisplayMessage._
 
 import pushka.json._
 
@@ -47,7 +48,7 @@ object DisplayUI {
   case class ChatBox(wsUrl: String) extends DomActorWithParams[List[String]] {
 
     val ws = new WebSocket(s"ws://$wsUrl")
-    ws.onmessage = { (event: MessageEvent) => {println(s"recieved ${event.data.toString}"); self ! read[ChatMessage](event.data.toString)}}
+    ws.onmessage = { (event: MessageEvent) => {println(s"recieved ${event.data.toString}"); self ! read[Envelope](event.data.toString).message}}
 
     val initValue = List()
 
@@ -58,7 +59,7 @@ object DisplayUI {
       msgBox,
       button(
         cls := "pure-button pure-button-primary",
-        onclick := {() => ws.send(write(ChatMessage(msgBox.value)))})("Send"),
+        onclick := {() => ws.send(write(Envelope(MonkeyMessage(msgBox.value))))})("Send"),
       ul(cls := "pure-menu-list")(
         for (t <- txt) yield li(cls := "pure-menu-item")(t)
       ),
@@ -70,7 +71,7 @@ object DisplayUI {
 
     override def operative = withText(initValue)
 
-    def withText(last: List[String]): Receive = domManagement orElse {
+    def withText(last: List[String]): Receive = domManagement orElse {      
       case ChatMessage(txt) =>
         val newTxt = (last :+ txt).takeRight(5)
         self ! UpdateValue(newTxt)

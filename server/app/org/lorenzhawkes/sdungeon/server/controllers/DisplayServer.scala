@@ -15,7 +15,7 @@ object DisplayServer {
   lazy val manager = system.actorOf(Props(Manager()), "manager")
 
   case class Manager() extends Actor {
-    import org.lorenzhawkes.sdungeon.shared.DisplayMsgs._
+    import org.lorenzhawkes.sdungeon.shared.DisplayMsgs.DisplayMessage._
 
     def receive = operative()
 
@@ -23,6 +23,7 @@ object DisplayServer {
       case AddClient(ref)    => context.become(operative(clients :+ ref))
       case RemoveClient(ref) => context.become(operative(clients.filterNot(_ == ref)))
       case msg: ChatMessage  => clients.foreach{c => c ! msg}
+      case msg               => println(s"Unknown message $msg")
     }
   }
 

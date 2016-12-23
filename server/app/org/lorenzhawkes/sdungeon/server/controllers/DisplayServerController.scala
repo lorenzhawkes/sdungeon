@@ -10,6 +10,7 @@ import akka.stream.actor._
 import play.api.libs.streams._
 import play.api.http.websocket.{Message, TextMessage}
 import org.lorenzhawkes.sdungeon.shared.DisplayMsgs._
+import org.lorenzhawkes.sdungeon.shared.DisplayMsgs.DisplayMessage._
 import javax.inject._
 import play.api._
 import play.api.mvc._
@@ -33,7 +34,7 @@ class DisplayServerController @Inject() (appLifecycle: ApplicationLifecycle) ext
       override def preStart() = DisplayServer.manager ! DisplayServer.AddClient(self)
 
       def receive = {
-        case msg: ChatMessage => onNext(TextMessage(write(msg)))
+        case msg: ChatMessage => onNext(TextMessage(write(Envelope(msg))))
       }
 
       override def postStop() = DisplayServer.manager ! DisplayServer.RemoveClient(self)
@@ -47,7 +48,7 @@ class DisplayServerController @Inject() (appLifecycle: ApplicationLifecycle) ext
       }
 
       def receive = {
-        case OnNext(TextMessage(text)) => DisplayServer.manager ! read[ChatMessage](text)
+        case OnNext(TextMessage(text)) => DisplayServer.manager ! read[Envelope](text).message
       }
     }
 
