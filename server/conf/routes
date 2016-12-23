@@ -1,0 +1,4 @@
+GET		/						    org.lorenzhawkes.sdungeon.server.controllers.DisplayServerController.display
+GET		/display/api/chat			org.lorenzhawkes.sdungeon.server.controllers.DisplayServerController.api
+
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
