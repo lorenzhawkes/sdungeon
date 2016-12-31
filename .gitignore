@@ -5,6 +5,7 @@ logs
 **/.classpath
 **/.project
 **/.cache-main
+**/.cache-tests
 /project/project
 **/.settings
 /shared/.js
