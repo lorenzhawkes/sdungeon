@@ -5,6 +5,7 @@ version := "1.0-SNAPSHOT"
 lazy val scalaV = "2.11.8"
 
 lazy val server = (project in file("server")).settings(
+  name := "sdungeon-server",
   scalaVersion := scalaV,
   scalaJSProjects := Seq(client),
   pipelineStages in Assets := Seq(scalaJSPipeline),
@@ -26,6 +27,7 @@ lazy val server = (project in file("server")).settings(
   dependsOn(sharedJvm)
 
 lazy val client = (project in file("client")).settings(
+  name := "sdungeon-client",
   scalaVersion := scalaV,
   persistLauncher := true,
   persistLauncher in Test := false,
@@ -42,6 +44,7 @@ lazy val client = (project in file("client")).settings(
 
 lazy val shared = (crossProject.crossType(CrossType.Pure) in file("shared")).
   settings(
+    name := "sdungeon-sharedJVM",
     scalaVersion := scalaV,
     libraryDependencies ++= Seq(
       "com.typesafe.akka" %% "akka-actor" % "2.4.11",
@@ -50,6 +53,7 @@ lazy val shared = (crossProject.crossType(CrossType.Pure) in file("shared")).
     addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
   ).
   jsSettings(
+    name := "sdungeon-sharedJS",
     libraryDependencies ++= Seq(
       "org.akka-js" %%% "akkajsactor" % "0.2.4.16",
       "com.github.fomkin" %%% "pushka-json" % "0.8.0"
